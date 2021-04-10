@@ -32,9 +32,10 @@ while True: # Loop forever
      method= sentence.split()[0]
      data= sentence.split()    
 
-     if sentence.find("If-Modified-Since:") != -1 and method=='HEAD':
+     if sentence.find("If-Modified-Since:") != -1:
      	status304= True
-     	print("STATUS 304") 
+
+     	
      
      if(serverfile!='/favicon.ico'): #We have to ignore the Favicon Request because we are not going to handle the favicon request
 
@@ -47,6 +48,13 @@ while True: # Loop forever
                 connectionSocket.send(final_response)
           
                 connectionSocket.close()
+
+          elif status304==True and serverfile[1:]=="test.html":
+               header = 'HTTP/1.1 304 Not Modified\n\n'
+               final_response = header.encode('utf-8')
+               connectionSocket.send(final_response)
+               connectionSocket.close()
+               
           else:
                try:
                     with open(serverfile[1:], "r", encoding='utf-8') as f: 
@@ -61,6 +69,10 @@ while True: # Loop forever
                except (FileNotFoundError, IOError):
                     header = 'HTTP/1.1 404 Page Not Found\n\n'
                     response = '<html><body><h3>Error 404: Page Not Found</h3></body></html>'.encode('utf-8')
+                    final_response = header.encode('utf-8')
+                    final_response += response
+                    connectionSocket.send(final_response)
+                    connectionSocket.close()
 
                except connectionSocket.error:
                     header = 'HTTP/1.1 400 Bad Gateway\n\n'
