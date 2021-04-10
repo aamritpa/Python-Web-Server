@@ -23,52 +23,58 @@ while True: # Loop forever
      connectionSocket, addr = serverSocket.accept()
      
      
+     
      # Read from socket (but not address as in UDP)
      sentence = connectionSocket.recv(1024).decode()
      serverfile = sentence.split()[1]
      print(serverfile)
+
+     if( "If-Modified-Since" in serverfile):
+          status304= True
+          print("STATUS 304")
      method = sentence.split()[0]
-     print("hello1")
      
      if(serverfile!='/favicon.ico'): #We have to ignore the Favicon Request because we are not going to handle the favicon request
 
           if (method!='GET'):
-               print("hello2")
-               header = 'HTTP/1.1 400 Bad Gateway\n\n'
-               response = '<html><body><h3>Error 400: Bad Gateway</h3></body></html>'.encode('utf-8')
+                header = 'HTTP/1.1 400 Bad Gateway\n\n'
+                response = '<html><body><h3>Error 400: Bad Gateway</h3></body></html>'.encode('utf-8')
 
-               final_response = header.encode('utf-8')
-               final_response += response
-               connectionSocket.send(final_response)
+                final_response = header.encode('utf-8')
+                final_response += response
+                connectionSocket.send(final_response)
           
-               connectionSocket.close()
+                connectionSocket.close()
           else:
                try:
-                    print("hello3")
                     with open(serverfile[1:], "r", encoding='utf-8') as f: 
                          response= f.read()
 
-                    print("hello5")
                     response = response.encode('utf-8')
+                         
                     header = 'HTTP/1.1 200 OK\n'
                     header += 'Content-Type: '+str('text/html')+'\n\n'
+                    count=1
 
-               except Exception as e:
-                    print("hello4")
-                    print(e)
-                    header = 'HTTP/1.1 408 Conection Time Out\n\n'
-                    response = '<html><body><h3>Error 408: Connection Timeout</h3></body></html>'.encode('utf-8')
-               '''
-               except :
-                    print(e)
-                    header = 'HTTP/1.1 400 Conection Time Out\n\n'
-                    response = '<html><body><h3>Error 400: Connection Timeout</h3></body></html>'.encode('utf-8')
-               '''
-               
-               final_response = header.encode('utf-8')
-               final_response += response
-               connectionSocket.send(final_response)
-               connectionSocket.close()
+               except (FileNotFoundError, IOError):
+                    header = 'HTTP/1.1 404 Page Not Found\n\n'
+                    response = '<html><body><h3>Error 404: Page Not Found</h3></body></html>'.encode('utf-8')
+
+               except connectionSocket.error:
+                    header = 'HTTP/1.1 400 Bad Gateway\n\n'
+                    response = '<html><body><h3>Error 400: Bad Gateway Request</h3></body></html>'.encode('utf-8')
+
+          
+
+          
+          
+          
+          
+          
+          final_response = header.encode('utf-8')
+          final_response += response
+          connectionSocket.send(final_response)
+          connectionSocket.close()
                     
      #connectionSocket.send('HTTP/1.1 200 OK\nContent-Type: text/html\n\n')
 
