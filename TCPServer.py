@@ -24,19 +24,21 @@ while True: # Loop forever
      
      
      
+     
      # Read from socket (but not address as in UDP)
      sentence = connectionSocket.recv(1024).decode()
      serverfile = sentence.split()[1]
-     print(serverfile)
+     status304=False
+     method= sentence.split()[0]
+     data= sentence.split()    
 
-     if( "If-Modified-Since" in serverfile):
-          status304= True
-          print("STATUS 304")
-     method = sentence.split()[0]
+     if sentence.find("If-Modified-Since:") != -1 and method=='HEAD':
+     	status304= True
+     	print("STATUS 304") 
      
      if(serverfile!='/favicon.ico'): #We have to ignore the Favicon Request because we are not going to handle the favicon request
 
-          if (method!='GET'):
+          if (method!='GET' and status304==False):
                 header = 'HTTP/1.1 400 Bad Gateway\n\n'
                 response = '<html><body><h3>Error 400: Bad Gateway</h3></body></html>'.encode('utf-8')
 
@@ -62,12 +64,7 @@ while True: # Loop forever
 
                except connectionSocket.error:
                     header = 'HTTP/1.1 400 Bad Gateway\n\n'
-                    response = '<html><body><h3>Error 400: Bad Gateway Request</h3></body></html>'.encode('utf-8')
-
-          
-
-          
-          
+                    response = '<html><body><h3>Error 400: Bad Gateway Request</h3></body></html>'.encode('utf-8') 
           
           
           
