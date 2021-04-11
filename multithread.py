@@ -36,6 +36,8 @@ def threaded(connectionSocket):
                 final_response += response
                 #final_response="timeout error".encode()
                 connectionSocket.send(final_response)
+                sentence=''
+                serverfile=''
                 break
 
                 
