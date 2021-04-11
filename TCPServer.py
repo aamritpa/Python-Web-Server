@@ -45,14 +45,17 @@ while True: # Loop forever
           print(e)
           # print("timeout has occured")
           noTimeout=False
-          header = 'HTTP/1.1 408 Timed out\n\n'
-          response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
-          # final_response = header.encode('utf-8')
-          # final_response += response
-          #final_response="timeout error".encode()
-          #connectionSocket.send(final_response)
+          #header = 'HTTP/1.1 408 Timed out\n\n'
+          #response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
+          #final_response = header.encode('utf-8')
+          #final_response += response
           sentence=''
           serverfile=''
+          final_response="timeout error".encode()
+          connectionSocket.send(final_response)
+          connectionSocket.close()
+                    
+     
           
   
      if sentence.find("If-Modified-Since:") != -1 and noTimeout:
