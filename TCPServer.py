@@ -46,22 +46,30 @@ while True: # Loop forever
      badRequest=False
      timeout=False
      connectionSocket, addr = serverSocket.accept()
-     connectionSocket.settimeout(5)
+     connectionSocket.settimeout(1)
      # elapsed=0.0
      # minutes=0
-     # for i in range(10,00000000000):
+     # for i in range(1000000):
      #      i=i+1
      # # Read from socket (but not address as in UDP)
      try:
           sentence = connectionSocket.recv(1024).decode()
+          print(sentence)
           serverfile = sentence.split()[1]
           status304=False
           method= sentence.split()[0]
           data= sentence.split() 
-          #print("no timeout") 
+          print("no timeout") 
      except Exception as e:
-          timeout=True
+          print(e)
           print("timeout has occured")
+          timeout=True
+          # header = 'HTTP/1.1 408 Timed out\n\n'
+          # response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
+          # final_response = header.encode('utf-8')
+          # final_response += response
+          final_response="timeout error".encode()
+          connectionSocket.send(final_response)
           connectionSocket.close()
           
   
