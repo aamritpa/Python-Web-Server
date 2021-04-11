@@ -44,15 +44,27 @@ while True: # Loop forever
      # New socket created on return
      objectModified=False
      badRequest=False
+     timeout=False
      connectionSocket, addr = serverSocket.accept()
-     # Read from socket (but not address as in UDP)
-     sentence = connectionSocket.recv(1024).decode()
-     serverfile = sentence.split()[1]
-     status304=False
-     method= sentence.split()[0]
-     data= sentence.split()    
-     
-     
+     connectionSocket.settimeout(5)
+     # elapsed=0.0
+     # minutes=0
+     # for i in range(10,00000000000):
+     #      i=i+1
+     # # Read from socket (but not address as in UDP)
+     try:
+          sentence = connectionSocket.recv(1024).decode()
+          serverfile = sentence.split()[1]
+          status304=False
+          method= sentence.split()[0]
+          data= sentence.split() 
+          #print("no timeout") 
+     except Exception as e:
+          timeout=True
+          print("timeout has occured")
+          connectionSocket.close()
+          
+  
      if sentence.find("If-Modified-Since:") != -1:
           
           try:
@@ -117,10 +129,4 @@ while True: # Loop forever
           connectionSocket.send(final_response)
           connectionSocket.close()
                     
-     #connectionSocket.send('HTTP/1.1 200 OK\nContent-Type: text/html\n\n')
-
-     # Send the reply
-     
-     
-     # Close connectiion too client (but not welcoming socket)
-     #connectionSocket.close()
+ 
