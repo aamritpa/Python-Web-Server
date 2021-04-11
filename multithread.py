@@ -6,6 +6,7 @@ from datetime import datetime
 from _thread import *
 import threading
 
+#The below date is the date when the file was updated last
 date= '04 Apr 2021 16:59:00'
 serverDate = datetime.strptime(date, '%d %b %Y %H:%M:%S')
 print_lock = threading.Lock()
@@ -31,12 +32,12 @@ def threaded(connectionSocket):
                 noTimeout=False
                 header = 'HTTP/1.1 408 Timed out\n\n'
                 response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
-                # final_response = header.encode('utf-8')
-                # final_response += response
+                final_response = header.encode('utf-8')
+                final_response += response
                 #final_response="timeout error".encode()
-                #connectionSocket.send(final_response)
-                sentence=''
-                serverfile=''
+                connectionSocket.send(final_response)
+                break
+
                 
 
             if sentence.find("If-Modified-Since:") != -1 and noTimeout:
