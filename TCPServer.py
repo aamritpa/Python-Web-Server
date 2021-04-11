@@ -46,17 +46,17 @@ while True: # Loop forever
           # print("no timeout") 
      except Exception as e:
           #print(e)
-          # print("timeout has occured")
+          print("Timeout has occured")
           noTimeout=False
           #Below is defined header for Error 408 
-          #header = 'HTTP/1.1 408 Timed out\n\n'
-          #response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
-          #final_response = header.encode('utf-8')
-          #final_response += response
+          header = 'HTTP/1.1 408 Timed out\n\n'
+          response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
+          final_response = header.encode('utf-8')
+          final_response += response
           sentence=''
           serverfile=''
           #Below is how we tested our error using TCPClient.py and not sending any request form that file
-          final_response="timeout error".encode()
+          #final_response="Error 408: Request Time-out".encode()
           connectionSocket.send(final_response)
           connectionSocket.close()
                     
