@@ -15,25 +15,31 @@ def threaded(connectionSocket):
         try:
             objectModified=False
             badRequest=False
-            timeout=False
-            status304=False
-            
+            noTimeout=True
+            connectionSocket.settimeout(5)
             try:
                 sentence = connectionSocket.recv(1024).decode()
+                print(sentence)
                 serverfile = sentence.split()[1]
-                
+                status304=False
                 method= sentence.split()[0]
-                data= sentence.split()  
-                print(serverfile)
+                data= sentence.split() 
+                # print("no timeout") 
             except Exception as e:
-                header = 'HTTP/1.1 408 Time Out\n\n'
-                response = '<html><body><h3>Error 408: Time Out</h3></body></html>'.encode('utf-8')
-                final_response = header.encode('utf-8')
-                final_response += response
-                connectionSocket.send(final_response)
-                break
+                print(e)
+                # print("timeout has occured")
+                noTimeout=False
+                header = 'HTTP/1.1 408 Timed out\n\n'
+                response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
+                # final_response = header.encode('utf-8')
+                # final_response += response
+                #final_response="timeout error".encode()
+                #connectionSocket.send(final_response)
+                sentence=''
+                serverfile=''
                 
-            if sentence.find("If-Modified-Since:") != -1:
+
+            if sentence.find("If-Modified-Since:") != -1 and noTimeout:
                 
                 try:
                     index=data.index("If-Modified-Since:")
@@ -41,44 +47,50 @@ def threaded(connectionSocket):
                     requestDate= data[index]+" "+data[index+1]+" "+data[index+2]+" "+data[index+3]
                     requestDate= datetime.strptime(requestDate, '%d %b %Y %H:%M:%S')
                     status304=True
-
+                    
+                    print(requestDate)
+                    print(serverDate)
                     if(requestDate<serverDate):
-                            objectModified=True
+                        print("True")
+                        objectModified=True
+                
                 except Exception as e:
                     badRequest=True
+
                 
-            if(serverfile!='/favicon.ico'): #We have to ignore the Favicon Request because we are not going to handle the favicon request
+            if(serverfile!='/favicon.ico') and noTimeout: #We have to ignore the Favicon Request because we are not going to handle the favicon request
 
                 if (method!='GET' and status304==False) or badRequest:
-                        header = 'HTTP/1.1 400 Bad Gateway\n\n'
-                        response = '<html><body><h3>Error 400: Bad Gateway</h3></body></html>'.encode('utf-8')
+                    header = 'HTTP/1.1 400 Bad Gateway\n\n'
+                    response = '<html><body><h3>Error 400: Bad Gateway</h3></body></html>'.encode('utf-8')
 
                 elif status304==True and serverfile[1:]=="test.html":
+                    print("Hello1")
+                    print("Hello1")
                     if(objectModified==False):
+                        print("Hello2")
                         header = 'HTTP/1.1 304 Not Modified\n\n'
                         response=''.encode('utf-8')
                     else:
-                        print_lock.acquire()
                         with open(serverfile[1:], "r", encoding='utf-8') as f: 
-                            response= f.read()
-                            print_lock.release()
+                                response= f.read()
 
                         response = response.encode('utf-8')
+                                
                         header = 'HTTP/1.1 200 OK\n'
                         header += 'Content-Type: '+str('text/html')+'\n\n'
                     
                 else:
                     try:
-                        print("I am here Positive")
                         with open(serverfile[1:], "r", encoding='utf-8') as f: 
-                            response= f.read()
+                                response= f.read()
+
                         response = response.encode('utf-8')
                                 
                         header = 'HTTP/1.1 200 OK\n'
                         header += 'Content-Type: '+str('text/html')+'\n\n'
 
-                    except IOError as e:
-                        print(e)
+                    except (FileNotFoundError, IOError):
                         header = 'HTTP/1.1 404 Page Not Found\n\n'
                         response = '<html><body><h3>Error 404: Page Not Found</h3></body></html>'.encode('utf-8')
 
@@ -101,7 +113,7 @@ def Main():
     # reverse a port on your computer
     # in our case it is 12345 but it
     # can be anything
-    port = 8888
+    port = 12000
     serverSocket = socket(AF_INET,SOCK_STREAM)
 
     # Bind the server port to the socket
