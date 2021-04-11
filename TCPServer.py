@@ -44,14 +44,9 @@ while True: # Loop forever
      # New socket created on return
      objectModified=False
      badRequest=False
-     timeout=False
+     noTimeout=True
      connectionSocket, addr = serverSocket.accept()
-     connectionSocket.settimeout(1)
-     # elapsed=0.0
-     # minutes=0
-     # for i in range(1000000):
-     #      i=i+1
-     # # Read from socket (but not address as in UDP)
+     connectionSocket.settimeout(5)
      try:
           sentence = connectionSocket.recv(1024).decode()
           print(sentence)
@@ -59,21 +54,22 @@ while True: # Loop forever
           status304=False
           method= sentence.split()[0]
           data= sentence.split() 
-          print("no timeout") 
+          # print("no timeout") 
      except Exception as e:
           print(e)
-          print("timeout has occured")
-          timeout=True
-          # header = 'HTTP/1.1 408 Timed out\n\n'
-          # response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
+          # print("timeout has occured")
+          noTimeout=False
+          header = 'HTTP/1.1 408 Timed out\n\n'
+          response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
           # final_response = header.encode('utf-8')
           # final_response += response
-          final_response="timeout error".encode()
-          connectionSocket.send(final_response)
-          connectionSocket.close()
+          #final_response="timeout error".encode()
+          #connectionSocket.send(final_response)
+          sentence=''
+          serverfile=''
           
   
-     if sentence.find("If-Modified-Since:") != -1:
+     if sentence.find("If-Modified-Since:") != -1 and noTimeout:
           
           try:
                index=data.index("If-Modified-Since:")
@@ -92,7 +88,7 @@ while True: # Loop forever
                badRequest=True
 
          
-     if(serverfile!='/favicon.ico'): #We have to ignore the Favicon Request because we are not going to handle the favicon request
+     if(serverfile!='/favicon.ico') and noTimeout: #We have to ignore the Favicon Request because we are not going to handle the favicon request
 
           if (method!='GET' and status304==False) or badRequest:
                 header = 'HTTP/1.1 400 Bad Gateway\n\n'
