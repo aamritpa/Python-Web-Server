@@ -77,7 +77,7 @@ while True: # Loop forever
                #print(requestDate)
                #print(serverDate)
                #Below we check if the file was modified
-               if(requestDate>serverDate):
+               if(requestDate<serverDate):
                     print("True")
                     objectModified=True
           

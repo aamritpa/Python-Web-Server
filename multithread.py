@@ -9,8 +9,7 @@ import threading
 #The below date is the date when the file was updated last
 date= '04 Apr 2021 16:59:00'
 serverDate = datetime.strptime(date, '%d %b %Y %H:%M:%S')
-print_lock = threading.Lock()
-# thread function
+
 def threaded(connectionSocket):
     while True: 
         try:
@@ -50,7 +49,7 @@ def threaded(connectionSocket):
                     requestDate= datetime.strptime(requestDate, '%d %b %Y %H:%M:%S')
                     status304=True  
                     
-                    if(requestDate>serverDate): #Comparing the the date of if-modified-since date with the server file modified date
+                    if(requestDate<serverDate ): #Comparing the the date of if-modified-since date with the server file modified date 
                         print("The Object has been Modified")
                         objectModified=True
                 
