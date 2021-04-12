@@ -6,6 +6,7 @@ from datetime import datetime
 from _thread import *
 import threading
 
+#RFC 822 Date Format(Considering only one Pattern)
 #The below date is the date when the file was updated last
 date= '04 Apr 2021 16:59:00'
 serverDate = datetime.strptime(date, '%d %b %Y %H:%M:%S')
@@ -114,16 +115,16 @@ def main():
 
     serverSocket.bind((host,port)) #Binding the socket
     serverSocket.listen(1) #Started Listening 
-    
+    print ('The server is ready to receive')
     while True:
   
         # establish connection with client
         connectionSocket, addr = serverSocket.accept()
         #Creating New Threads for each connection
+        print("Client Connected  "+str(addr[0])+" : "+str(addr[1]))
         start_new_thread(threaded, (connectionSocket,))
 
     serverSocket.close() #Closing the socket when sever finish
-  
   
 if __name__ == '__main__':
     main()

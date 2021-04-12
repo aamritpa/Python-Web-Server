@@ -4,7 +4,7 @@ import codecs
 import time
 from datetime import datetime
 
-
+#RFC 822 Date Format(Considering only one Pattern)
 date= '04 Apr 2021 16:59:00'
 serverDate = datetime.strptime(date, '%d %b %Y %H:%M:%S')
 
@@ -89,8 +89,8 @@ while True: # Loop forever
      if(serverfile!='/favicon.ico') and noTimeout: #We have to ignore the Favicon Request because we are not going to handle the favicon request
           #Check for Error 400
           if (method!='GET' and status304==False) or badRequest:
-                header = 'HTTP/1.1 400 Bad Gateway\n\n'
-                response = '<html><body><h3>Error 400: Bad Gateway</h3></body></html>'.encode('utf-8')
+                header = 'HTTP/1.1 400 Bad Request\n\n'
+                response = '<html><body><h3>Error 400: Bad Request</h3></body></html>'.encode('utf-8')
           
           #Check for 304
           elif status304==True and serverfile[1:]=="test.html":

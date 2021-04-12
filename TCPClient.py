@@ -12,7 +12,7 @@ clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName,serverPort))
 
 # Recieve user input from keyboard
-sentence = input('Input lowercase sentence:')
+sentence = input()
 
 # Send! No need to specify Server Name and Server Port! Why?
 # clientSocket.send(sentence.encode())
@@ -21,7 +21,6 @@ sentence = input('Input lowercase sentence:')
 modifiedSentence = clientSocket.recv(1024)
 
 # Print out the received string
-print ('From Server:', modifiedSentence.decode())
 #
 # # Close the socket
 # clientSocket.close()
