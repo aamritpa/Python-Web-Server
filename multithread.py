@@ -50,7 +50,7 @@ def threaded(connectionSocket):
                     requestDate= datetime.strptime(requestDate, '%d %b %Y %H:%M:%S')
                     status304=True  
                     
-                    if(requestDate<serverDate): #Comparing the the date of if-modified-since date with the server file modified date
+                    if(requestDate>serverDate): #Comparing the the date of if-modified-since date with the server file modified date
                         print("The Object has been Modified")
                         objectModified=True
                 
