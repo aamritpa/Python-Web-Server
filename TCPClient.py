@@ -12,15 +12,20 @@ clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName,serverPort))
 
 # Recieve user input from keyboard
-sentence = input()
+# Recieve user input from keyboard
+sentence = input('Input anything:')
 
-# Send! No need to specify Server Name and Server Port! Why?
-# clientSocket.send(sentence.encode())
+# Send! No need to specify Server Name and Server Port!
+ 
+#The below line was commented to  test for Error 408
+clientSocket.send(sentence.encode())
 #
-# # Read reply characters! No need to read address! Why?
+# # Read reply characters! No need to read address! 
 modifiedSentence = clientSocket.recv(1024)
 
 # Print out the received string
+# Print out the received string
+print ('From Server:', modifiedSentence.decode())
 #
 # # Close the socket
-# clientSocket.close()
+clientSocket.close()

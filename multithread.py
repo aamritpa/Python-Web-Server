@@ -21,7 +21,11 @@ def threaded(connectionSocket):
             connectionSocket.settimeout(5)   #Setting up timeout for that connection
             try:
                 sentence = connectionSocket.recv(1024).decode()
-                #print(sentence)  #To check the request data 
+                #Below commented code was for testing multithreading using TCPClient
+                # print("I have made a connection")
+                # sentence=sentence+" "+"I am happy that you work."
+                # connectionSocket.send(sentence.encode())
+                # #print(sentence)  #To check the request data 
                 serverfile = sentence.split()[1] #Get the File name in the request
                 method= sentence.split()[0]  #Taking out the method 'GET'/'POST'....or anything else
                 data= sentence.split() #Split the data to keep track of informtions seperately
@@ -34,6 +38,7 @@ def threaded(connectionSocket):
                 response = '<html><body><h3>Error 408: You waited too long to request</h3></body></html>'.encode('utf-8')
                 final_response = header.encode('utf-8')
                 final_response += response
+                #below line was for testing error 408 with TCPClient
                 #final_response="timeout error".encode()
                 connectionSocket.send(final_response)
                 sentence=''   #Sentence will be empty
