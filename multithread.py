@@ -4,7 +4,6 @@ from datetime import datetime
   
 # import thread module
 from _thread import *
-import threading
 
 #RFC 822 Date Format(Considering only one Pattern)
 #The below date is the date when the file was updated last
@@ -106,10 +105,9 @@ def threaded(connectionSocket):
                 final_response = header.encode('utf-8')
                 final_response += response          # adding header and response
                 connectionSocket.send(final_response)#Send the response to the client
-                break 
-                
+                break  
         except Exception as e: #General Exception to cover bad scenarios
-            print(e) 
+            pass 
     connectionSocket.close() #Closing particluar connection             
     
 def main():
